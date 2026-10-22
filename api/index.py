@@ -1,7 +1,109 @@
 from http.server import BaseHTTPRequestHandler
 import json
+import os
 from urllib.parse import parse_qs, urlparse
 import yt_dlp
+
+HTML_PAGE = """<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oxlyz Music</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #09090b; color: #f4f4f5; font-family: sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-28">
+  <header class="p-4 sticky top-0 z-10 glass">
+    <div class="max-w-md mx-auto flex flex-col gap-3">
+      <h1 class="text-xl font-bold tracking-wider text-purple-400">OXLYZ MUSIC</h1>
+      <div class="flex gap-2">
+        <input id="searchInput" type="text" placeholder="Cari lagu atau artis..." 
+          class="w-full px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 focus:outline-none focus:border-purple-500 text-sm">
+        <button onclick="searchMusic()" 
+          class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-xl font-medium text-sm transition">
+          Cari
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-md w-full mx-auto p-4">
+    <div id="statusText" class="text-center text-zinc-500 text-sm mt-10">Ketik judul lagu untuk mulai mendengarkan bebas iklan.</div>
+    <div id="resultsList" class="flex flex-col gap-3 mt-2"></div>
+  </main>
+
+  <div id="playerBar" class="fixed bottom-0 left-0 right-0 p-4 glass hidden">
+    <div class="max-w-md mx-auto flex flex-col gap-2">
+      <div class="flex items-center gap-3">
+        <img id="playerThumb" src="" class="w-12 h-12 rounded-lg object-cover bg-zinc-800">
+        <div class="flex-1 overflow-hidden">
+          <p id="playerTitle" class="text-sm font-semibold truncate">Judul Lagu</p>
+          <p id="playerArtist" class="text-xs text-zinc-400 truncate">Artis</p>
+        </div>
+      </div>
+      <audio id="audioElement" controls class="w-full h-8 mt-1"></audio>
+    </div>
+  </div>
+
+  <script>
+    async function searchMusic() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+      
+      const status = document.getElementById('statusText');
+      const list = document.getElementById('resultsList');
+      status.innerText = 'Mencari lagu...';
+      status.classList.remove('hidden');
+      list.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/search?q=' + encodeURIComponent(q));
+        const data = await res.json();
+        status.classList.add('hidden');
+
+        if (!data || data.length === 0) {
+          status.innerText = 'Lagu tidak ditemukan.';
+          status.classList.remove('hidden');
+          return;
+        }
+
+        data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'glass p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-white/10 transition';
+          card.onclick = () => playMusic(item.id, item.title, item.uploader, item.thumbnail);
+          card.innerHTML = `
+            <img src="${item.thumbnail}" class="w-14 h-14 rounded-lg object-cover bg-zinc-800">
+            <div class="flex-1 overflow-hidden">
+              <h3 class="text-sm font-semibold truncate">${item.title}</h3>
+              <p class="text-xs text-zinc-400 truncate">${item.uploader || 'YouTube Audio'}</p>
+            </div>
+            <span class="text-purple-400 text-xs font-bold px-2 py-1 rounded bg-purple-500/10">PLAY</span>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        status.innerText = 'Gagal memuat hasil pencarian.';
+      }
+    }
+
+    function playMusic(id, title, artist, thumb) {
+      const bar = document.getElementById('playerBar');
+      const audio = document.getElementById('audioElement');
+      document.getElementById('playerTitle').innerText = title;
+      document.getElementById('playerArtist').innerText = artist || 'Oxlyz Stream';
+      document.getElementById('playerThumb').src = thumb;
+
+      bar.classList.remove('hidden');
+      audio.src = '/api/stream?id=' + id;
+      audio.play();
+    }
+  </script>
+</body>
+</html>"""
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -9,12 +111,19 @@ class handler(BaseHTTPRequestHandler):
         path = parsed_path.path
         query_params = parse_qs(parsed_path.query)
 
-        if "/api/search" in path:
+        if path == "/" or path == "/index.html" or path == "/api/index.py":
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(HTML_PAGE.encode('utf-8'))
+            return
+
+        elif "/api/search" in path:
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-
+            
             query = query_params.get('q', [''])[0]
             results = []
             if query:
@@ -32,7 +141,7 @@ class handler(BaseHTTPRequestHandler):
                             })
                     except Exception as e:
                         results = []
-
+            
             self.wfile.write(json.dumps(results).encode('utf-8'))
             return
 
@@ -60,7 +169,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         else:
-            self.send_response(404)
-            self.send_header('Content-type', 'text/plain')
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html; charset=utf-8')
             self.end_headers()
-            self.wfile.write(b"Endpoint not found")
+            self.wfile.write(HTML_PAGE.encode('utf-8'))
