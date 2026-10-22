@@ -1,334 +1,103 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#09090B">
-    <title>Oxlyz</title>
-
-    <!-- Google Fonts: Plus Jakarta Sans untuk kesan Soft, Clean & Modern -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome 6.5.1 CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="assets/css/variables.css">
-    <link rel="stylesheet" href="assets/css/glass.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oxlyz Music</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #09090b; color: #f4f4f5; font-family: sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
 </head>
-<body>
-
-    <!-- Background Ambient Glow (Efek cahaya lembut di balik Glassmorphism) -->
-    <div class="ambient-glow glow-top"></div>
-    <div class="ambient-glow glow-bottom"></div>
-
-    <!-- Container Utama Aplikasi -->
-    <div class="app-container">
-
-        <!-- HEADER ATAS -->
-        <header class="app-header glass-panel-subtle">
-            <div class="brand">
-                <i class="fa-solid fa-compact-disc brand-icon"></i>
-                <span class="brand-name">OXLYZ</span>
-            </div>
-            <div class="header-actions">
-                <button class="icon-btn" id="btn-history" aria-label="Riwayat Putar">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                </button>
-                <button class="icon-btn" id="btn-settings" aria-label="Pengaturan">
-                    <i class="fa-solid fa-sliders"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- AREA KONTEN UTAMA (Single Page Application Views) -->
-        <main class="main-content">
-
-            <!-- ==================== 1. VIEW: HOME ==================== -->
-            <section id="view-home" class="view-section active">
-                
-                <!-- Banner Selamat Datang / Featured -->
-                <div class="hero-card glass-card">
-                    <div class="hero-badge">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>Bebas Iklan &bull; Audio Jernih</span>
-                    </div>
-                    <h1 class="hero-title">Nikmati Musik Tanpa Batas</h1>
-                    <p class="hero-subtitle">Streaming langsung dengan kualitas audio terbaik.</p>
-                </div>
-
-                <!-- Bagian: Terakhir Diputar -->
-                <div class="section-block">
-                    <div class="section-header">
-                        <h2 class="section-title">Terakhir Diputar</h2>
-                        <button class="text-btn" id="btn-clear-recent">Bersihkan</button>
-                    </div>
-                    <div class="horizontal-scroll" id="recent-tracks-container">
-                        <!-- Contoh Item (Nantinya diisi otomatis oleh JS / Database) -->
-                        <div class="track-card glass-card-interactive" data-id="sample1">
-                            <div class="card-cover-wrapper">
-                                <img src="assets/img/default-cover.jpg" alt="Cover" class="card-cover" onerror="this.src='https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=80'">
-                                <button class="card-play-btn">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
-                            <h3 class="card-title">Midnight City</h3>
-                            <p class="card-artist">M83</p>
-                        </div>
-
-                        <div class="track-card glass-card-interactive" data-id="sample2">
-                            <div class="card-cover-wrapper">
-                                <img src="assets/img/default-cover.jpg" alt="Cover" class="card-cover" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=80'">
-                                <button class="card-play-btn">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
-                            <h3 class="card-title">After Dark</h3>
-                            <p class="card-artist">Mr.Kitty</p>
-                        </div>
-
-                        <div class="track-card glass-card-interactive" data-id="sample3">
-                            <div class="card-cover-wrapper">
-                                <img src="assets/img/default-cover.jpg" alt="Cover" class="card-cover" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&auto=format&fit=crop&q=80'">
-                                <button class="card-play-btn">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
-                            <h3 class="card-title">Starboy</h3>
-                            <p class="card-artist">The Weeknd</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bagian: Rekomendasi / Antrean Cepat -->
-                <div class="section-block">
-                    <div class="section-header">
-                        <h2 class="section-title">Rekomendasi Untukmu</h2>
-                    </div>
-                    <div class="track-list" id="recommended-tracks-container">
-                        <!-- Contoh Baris Lagu -->
-                        <div class="track-row glass-row" data-id="rec1">
-                            <img src="assets/img/default-cover.jpg" alt="Cover" class="row-cover" onerror="this.src='https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=150&auto=format&fit=crop&q=80'">
-                            <div class="row-info">
-                                <h4 class="row-title">Blinding Lights</h4>
-                                <p class="row-artist">The Weeknd</p>
-                            </div>
-                            <span class="row-duration">03:20</span>
-                            <button class="icon-btn-sm row-option-btn" aria-label="Opsi Lagu">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                        </div>
-
-                        <div class="track-row glass-row" data-id="rec2">
-                            <img src="assets/img/default-cover.jpg" alt="Cover" class="row-cover" onerror="this.src='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150&auto=format&fit=crop&q=80'">
-                            <div class="row-info">
-                                <h4 class="row-title">Sweater Weather</h4>
-                                <p class="row-artist">The Neighbourhood</p>
-                            </div>
-                            <span class="row-duration">04:00</span>
-                            <button class="icon-btn-sm row-option-btn" aria-label="Opsi Lagu">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- ==================== 2. VIEW: SEARCH ==================== -->
-            <section id="view-search" class="view-section">
-                
-                <!-- Kolom Pencarian Glassmorphism -->
-                <div class="search-box-wrapper">
-                    <div class="search-bar glass-input">
-                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" id="search-input" placeholder="Cari lagu, artis, atau album..." autocomplete="off">
-                        <button class="icon-btn-sm hidden" id="btn-clear-search" aria-label="Hapus Pencarian">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Status Loading Pencarian (yt-dlp) -->
-                <div id="search-loading" class="state-container hidden">
-                    <i class="fa-solid fa-circle-notch fa-spin state-icon"></i>
-                    <p class="state-text">Mencari audio terbaik...</p>
-                </div>
-
-                <!-- Tampilan Awal Sebelum Mencari -->
-                <div id="search-empty-state" class="state-container">
-                    <i class="fa-solid fa-waveform-lines state-icon"></i>
-                    <p class="state-title">Temukan Musikmu</p>
-                    <p class="state-subtext">Ketik judul lagu atau nama penyanyi untuk mulai memutar musik tanpa iklan.</p>
-                </div>
-
-                <!-- Daftar Hasil Pencarian -->
-                <div class="track-list" id="search-results-container">
-                    <!-- Hasil dari api/search.py akan dimasukkan ke sini melalui JavaScript -->
-                </div>
-
-            </section>
-
-            <!-- ==================== 3. VIEW: LIBRARY ==================== -->
-            <section id="view-library" class="view-section">
-                
-                <div class="library-header">
-                    <h2 class="section-title">Koleksi Musik</h2>
-                    <button class="pill-btn glass-pill" id="btn-create-playlist">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Playlist Baru</span>
-                    </button>
-                </div>
-
-                <!-- Filter Kategori Koleksi -->
-                <div class="library-tabs">
-                    <button class="tab-pill active" data-filter="favorites">
-                        <i class="fa-solid fa-heart"></i> Disukai
-                    </button>
-                    <button class="tab-pill" data-filter="playlists">
-                        <i class="fa-solid fa-list-ul"></i> Playlist
-                    </button>
-                </div>
-
-                <!-- Daftar Lagu Disukai / Playlist dari PostgreSQL -->
-                <div class="track-list" id="library-container">
-                    <div class="state-container" id="library-empty">
-                        <i class="fa-regular fa-folder-open state-icon"></i>
-                        <p class="state-title">Koleksi Masih Kosong</p>
-                        <p class="state-subtext">Simpan lagu favoritmu agar mudah diakses kapan saja.</p>
-                    </div>
-                </div>
-
-            </section>
-
-        </main>
-
-        <!-- ==================== FLOATING MINI PLAYER ==================== -->
-        <div id="mini-player" class="mini-player glass-floating">
-            <!-- Progress Bar Tipis di Atas Mini Player -->
-            <div class="mini-progress-track">
-                <div class="mini-progress-fill" id="mini-progress-fill"></div>
-            </div>
-
-            <div class="mini-player-content" id="mini-player-trigger">
-                <img src="assets/img/default-cover.jpg" alt="Cover" id="mini-cover" class="mini-cover" onerror="this.src='https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150&auto=format&fit=crop&q=80'">
-                <div class="mini-info">
-                    <h4 id="mini-title" class="mini-title">Pilih lagu untuk diputar</h4>
-                    <p id="mini-artist" class="mini-artist">Oxlyz Audio Engine</p>
-                </div>
-            </div>
-
-            <div class="mini-controls">
-                <button class="icon-btn" id="mini-btn-play" aria-label="Putar atau Jeda">
-                    <i class="fa-solid fa-play" id="mini-play-icon"></i>
-                </button>
-                <button class="icon-btn" id="mini-btn-next" aria-label="Lagu Berikutnya">
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
-        <nav class="bottom-nav glass-nav">
-            <button class="nav-item active" data-target="view-home">
-                <i class="fa-solid fa-house"></i>
-                <span>Beranda</span>
-            </button>
-            <button class="nav-item" data-target="view-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <span>Cari</span>
-            </button>
-            <button class="nav-item" data-target="view-library">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>Koleksi</span>
-            </button>
-        </nav>
-
+<body class="min-h-screen flex flex-col pb-28">
+  <!-- Header & Search -->
+  <header class="p-4 sticky top-0 z-10 glass">
+    <div class="max-w-md mx-auto flex flex-col gap-3">
+      <h1 class="text-xl font-bold tracking-wider text-purple-400">OXLYZ MUSIC</h1>
+      <div class="flex gap-2">
+        <input id="searchInput" type="text" placeholder="Cari lagu atau artis..." 
+          class="w-full px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 focus:outline-none focus:border-purple-500 text-sm">
+        <button onclick="searchMusic()" 
+          class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-xl font-medium text-sm transition">
+          Cari
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- ==================== FULL SCREEN PLAYER MODAL ==================== -->
-    <div id="full-player-modal" class="full-player glass-modal hidden">
-        
-        <!-- Header Modal -->
-        <div class="fp-header">
-            <button class="icon-btn" id="btn-close-fp" aria-label="Tutup Pemutar">
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="fp-header-info">
-                <span class="fp-playing-from">MEMUTAR DARI STREAM</span>
-                <span class="fp-quality-badge">
-                    <i class="fa-solid fa-shield-halved"></i> HQ Audio
-                </span>
-            </div>
-            <button class="icon-btn" id="btn-fp-queue" aria-label="Antrean Lagu">
-                <i class="fa-solid fa-bars-staggered"></i>
-            </button>
+  <!-- Daftar Lagu -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4">
+    <div id="statusText" class="text-center text-zinc-500 text-sm mt-10">Ketik judul lagu untuk mulai mendengarkan bebas iklan.</div>
+    <div id="resultsList" class="flex flex-col gap-3 mt-2"></div>
+  </main>
+
+  <!-- Bottom Audio Player -->
+  <div id="playerBar" class="fixed bottom-0 left-0 right-0 p-4 glass hidden">
+    <div class="max-w-md mx-auto flex flex-col gap-2">
+      <div class="flex items-center gap-3">
+        <img id="playerThumb" src="" class="w-12 h-12 rounded-lg object-cover bg-zinc-800">
+        <div class="flex-1 overflow-hidden">
+          <p id="playerTitle" class="text-sm font-semibold truncate">Judul Lagu</p>
+          <p id="playerArtist" class="text-xs text-zinc-400 truncate">Artis</p>
         </div>
-
-        <!-- Cover Artwork Besar -->
-        <div class="fp-artwork-container">
-            <img src="assets/img/default-cover.jpg" alt="Album Art" id="fp-cover" class="fp-cover" onerror="this.src='https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=600&auto=format&fit=crop&q=80'">
-        </div>
-
-        <!-- Informasi Lagu & Tombol Like -->
-        <div class="fp-track-details">
-            <div class="fp-text">
-                <h2 id="fp-title" class="fp-title">Pilih lagu untuk diputar</h2>
-                <p id="fp-artist" class="fp-artist">Oxlyz Audio Engine</p>
-            </div>
-            <button class="icon-btn" id="btn-fp-favorite" aria-label="Sukai Lagu">
-                <i class="fa-regular fa-heart" id="fp-heart-icon"></i>
-            </button>
-        </div>
-
-        <!-- Progress / Seek Bar -->
-        <div class="fp-progress-area">
-            <input type="range" id="fp-seek-slider" class="seek-slider" min="0" max="100" value="0">
-            <div class="fp-time-stamps">
-                <span id="fp-current-time">00:00</span>
-                <span id="fp-total-duration">00:00</span>
-            </div>
-        </div>
-
-        <!-- Tombol Kontrol Utama -->
-        <div class="fp-controls">
-            <button class="icon-btn fp-ctrl-secondary" id="btn-fp-shuffle" aria-label="Acak Lagu">
-                <i class="fa-solid fa-shuffle"></i>
-            </button>
-            <button class="icon-btn fp-ctrl-main" id="btn-fp-prev" aria-label="Lagu Sebelumnya">
-                <i class="fa-solid fa-backward-step"></i>
-            </button>
-            <button class="fp-play-circle" id="btn-fp-play" aria-label="Putar atau Jeda">
-                <i class="fa-solid fa-play" id="fp-play-icon"></i>
-            </button>
-            <button class="icon-btn fp-ctrl-main" id="btn-fp-next" aria-label="Lagu Berikutnya">
-                <i class="fa-solid fa-forward-step"></i>
-            </button>
-            <button class="icon-btn fp-ctrl-secondary" id="btn-fp-repeat" aria-label="Ulangi Lagu">
-                <i class="fa-solid fa-repeat"></i>
-            </button>
-        </div>
-
-        <!-- Bar Bawah Modal (Pengatur Volume & Simpan ke Playlist) -->
-        <div class="fp-bottom-actions">
-            <div class="volume-control">
-                <i class="fa-solid fa-volume-low"></i>
-                <input type="range" id="fp-volume-slider" class="volume-slider" min="0" max="100" value="100">
-                <i class="fa-solid fa-volume-high"></i>
-            </div>
-        </div>
-
+      </div>
+      <audio id="audioElement" controls class="w-full h-8 mt-1"></audio>
     </div>
+  </div>
 
-    <!-- ELEMEN AUDIO HTML5 (Tersembunyi, dikontrol lewat player.js) -->
-    <audio id="audio-player" preload="metadata"></audio>
+  <script>
+    async function searchMusic() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+      
+      const status = document.getElementById('statusText');
+      const list = document.getElementById('resultsList');
+      status.innerText = 'Mencari lagu...';
+      status.classList.remove('hidden');
+      list.innerHTML = '';
 
-    <!-- Scripts -->
-    <script src="assets/js/api.js"></script>
-    <script src="assets/js/player.js"></script>
-    <script src="assets/js/app.js"></script>
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        status.classList.add('hidden');
+
+        if (!data || data.length === 0) {
+          status.innerText = 'Lagu tidak ditemukan.';
+          status.classList.remove('hidden');
+          return;
+        }
+
+        data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'glass p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-white/10 transition';
+          card.onclick = () => playMusic(item.id, item.title, item.uploader, item.thumbnail);
+          card.innerHTML = `
+            <img src="${item.thumbnail}" class="w-14 h-14 rounded-lg object-cover bg-zinc-800">
+            <div class="flex-1 overflow-hidden">
+              <h3 class="text-sm font-semibold truncate">${item.title}</h3>
+              <p class="text-xs text-zinc-400 truncate">${item.uploader || 'YouTube Audio'}</p>
+            </div>
+            <span class="text-purple-400 text-xs font-bold px-2 py-1 rounded bg-purple-500/10">PLAY</span>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        status.innerText = 'Gagal memuat hasil pencarian.';
+      }
+    }
+
+    function playMusic(id, title, artist, thumb) {
+      const bar = document.getElementById('playerBar');
+      const audio = document.getElementById('audioElement');
+      document.getElementById('playerTitle').innerText = title;
+      document.getElementById('playerArtist').innerText = artist || 'Oxlyz Stream';
+      document.getElementById('playerThumb').src = thumb;
+
+      bar.classList.remove('hidden');
+      audio.src = `/api/stream?id=${id}`;
+      audio.play();
+    }
+  </script>
 </body>
 </html>
