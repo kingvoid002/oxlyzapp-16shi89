@@ -1,0 +1,8 @@
+{
+  "name": "oxlyz-app",
+  "version": "1.0.0",
+  "description": "Oxlyz Music Streaming Webview App",
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}
